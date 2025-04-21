@@ -23,37 +23,20 @@ function validateTwitterCredentials() {
   const missing = required.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
-    console.warn(`Missing Twitter credentials: ${missing.join(", ")}`);
-    console.warn("Twitter posting functionality will be disabled.");
-    return false;
+    throw new Error(`Missing Twitter credentials: ${missing.join(", ")}`);
   }
-  return true;
 }
 
-const twitterCredentialsValid = validateTwitterCredentials();
+validateTwitterCredentials();
 
-const twitterClient = twitterCredentialsValid
-  ? new TwitterApi({
-      appKey: process.env.TWITTER_API_KEY!,
-      appSecret: process.env.TWITTER_API_SECRET!,
-      accessToken: process.env.TWITTER_ACCESS_TOKEN!,
-      accessSecret: process.env.TWITTER_ACCESS_SECRET!,
-    }).readWrite
-  : null;
+const twitterClient = new TwitterApi({
+  appKey: process.env.TWITTER_API_KEY!,
+  appSecret: process.env.TWITTER_API_SECRET!,
+  accessToken: process.env.TWITTER_ACCESS_TOKEN!,
+  accessSecret: process.env.TWITTER_ACCESS_SECRET!,
+}).readWrite;
 
 export async function createPost(status: string): Promise<CreatePostResponse> {
-  if (!twitterCredentialsValid || !twitterClient) {
-    console.log("Twitter credentials not set. Would have tweeted:", status);
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Twitter credentials not set. Would have tweeted: ${status}`,
-        },
-      ],
-    };
-  }
-
   try {
     console.log("Tweeting status...");
 

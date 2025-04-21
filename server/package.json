@@ -3,8 +3,14 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "tsx watch index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tsx": "^4.19.3"
   },
   "peerDependencies": {
     "typescript": "^5"
